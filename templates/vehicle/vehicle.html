@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block stylesheet %}{% static 'vehicle/css/vehicle.css' %}{% endblock stylesheet %}
+{% block title %}
+{{vehicle.serie}}
+{% endblock title %}
+
+{% block content %}
+<div class="container ">
+    <div class="row g-3">
+        <div class="col-12 d-flex justify-content-between border">
+        </div>
+        <div class="col-md-5 ps-3 col-lg-5 justify-content-md-center order-1 border-dark price-info">
+            <div class="d-grid gap-2">
+
+                <div class="d-flex d-flex-inline justify-content-between">
+                    <div class="navbar-brand">
+                        <img class="img" src="{{vehicle.model.make.logo.url}}" alt="{{vehicle.model.make}}" width="45"
+                            height="30">
+                        <span class="h3">{{ vehicle.model.make }}</span>
+                        <p class="text-muted">{{ vehicle.model}}</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="card mb-3">
+                    <div class="card-header">Specifications</div>
+                    <div class="card-body text-dark">
+                        <dl class="row">
+                            <dt class="card-title col-6">Poid de vehicule</dt>
+                            <dd class="card-text col-6">{{vehicle.model.gross_vehicle_weight}} kg</dd>
+                            <dt class="card-title col-6">Poid de vehicule chargé</dt>
+                            <dd class="card-text col-6">{{vehicle.model.gross_combined_weight}} kg</dd>
+                            <dt class="card-title col-6">Longeur du vehicule</dt>
+                            <dd class="card-text col-6">{{vehicle.model.total_length_L}} m</dd>
+                            <dt class="card-title col-6">Largeur du vehicule</dt>
+                            <dd class="card-text col-6">{{vehicle.model.total_width_W}} m</dd>
+                            {% for specification in specifications %}
+                            <dt class="card-title col-6">{{specification.specification}}</dt>
+                            <dd class="card-text col-6">{{specification.value}}</dd>
+                            {% endfor %}
+                        </dl>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <button type="button" id="add-button" class="btn btn-success fw500"><a
+                    href="{% url 'vehicle:vehicle-update' vehicle.id %}">Update</a></button>
+            <button type="button" id="add-button" class="btn btn-light fw500"><a
+                    href="{% url 'vehicle:vehicle-delete' vehicle.id %}" class="btn btn-light fw500">Delete</a></button>
+
+        </div>
+
+        <div class="col-md-7 col-lg-7 p-0">
+            <div class="card mb-3 border-0">
+                <div class="row g-0">
+                    <div class="col-md-12">
+                        <div class="card-body p-1">
+                            <h1 class="mb-0 h2 pe-4 pb-4">{{ vehicle.serie }}</h1>
+                            <div class="bg-light">
+                                <img class="img-fluid" alt="{{ vehicle.slug}}" src="{{ vehicle.picture.url}}"
+                                    width="450px" height="150px">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock  %}

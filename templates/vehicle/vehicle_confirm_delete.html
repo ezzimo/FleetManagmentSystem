@@ -1,0 +1,36 @@
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Vehicle List</title>
+  </head>
+  <body>
+    <h1>Vous etes sur de vouloir suprimer ce Bus! </h1>
+        {% csrf_token %}
+        <ul> <table>
+          <thead>
+            <th>Serie  </th>
+            <th>Matricule </th>
+            <th>WW </th>
+            <th>Marque </th>
+          </thead>
+            <tbody>
+              <td>{{ vehicle.serie}}</td>
+              <td>{{ vehicle.matricule }}</td>
+              <td>{{ vehicle.ww }}</td>
+              <td>{{ vehicle.model }}</td>
+              <td> <form action="" method="POST">
+                {% csrf_token %}
+                 <input type="submit" value="Delete">
+                <input type="submit" onclick=" window.location= '{% url 'vehicle:vehicles_all' %}' ; return False;" value="Cancel">
+              </form></td>
+            </tbody>
+        </table>
+
+        </ul>
+    <ul>
+      <li> <a href="login">Hi</a> </li>
+      <li> <a href="#">How are you</a> </li>
+      <li></li>
+    </ul>
+  </body>
+</html>

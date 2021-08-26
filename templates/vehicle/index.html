@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %} Home {% endblock  %}
+
+{% block content %}
+
+<div class="container">
+  <div class="pb-3 h5"> All vehicles </div>
+  {% if not vehicles %}
+  <div class="col-12"> There currently any vehicles to show </div>
+  {% else %}
+  <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
+    {% for vehicle in vehicles %}
+    <div class="col">
+      <div class="card mb-4 rounded-3 shadow-sm">
+        <div class="card-header py-3">
+          <h4 class="my-0 fw-normal"> {{ vehicle.model.make}} </h4>
+          <h3 class="my-0 fw-normal"> {{ vehicle.model}}</h3>
+        </div>
+        <div class="card-body">
+          <img src="{{vehicle.picture.url}}" alt="{{vehicle.slug}}" class="img-fluid" height="350" width="650">
+          <div class="list-unstyled mt-3 mb-4">
+            <a href="{{vehicle.get_absolute_url}}">
+              <p>
+                {{vehicle.serie}}
+              </p>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <div>
+    <hr>
+    <a  class="btn btn-success fw500" type="button"
+        href="{% url 'vehicle:vehicle-creation' %}">Add</a>
+  </div>
+</div>
+{% endblock  %}
