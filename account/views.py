@@ -8,7 +8,6 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from orders.views import user_orders
 
 from .forms import RegistrationForm, UserAddressForm, UserEditForm
 from .models import Address, Customer
@@ -17,8 +16,8 @@ from .token import account_activation_token
 
 @login_required
 def dashboard(request):
-    orders = user_orders(request)
-    return render(request, "account/dashboard/dashboard.html", {"orders": orders})
+    #    orders = user_orders(request) , {"orders": orders}
+    return render(request, "account/dashboard/dashboard.html")
 
 
 @login_required
@@ -99,7 +98,8 @@ def add_address(request):
         address_form = UserAddressForm(data=request.POST)
         if address_form.is_valid():
             address_form = address_form.save(commit=False)
-            address_form.customer = request.user
+            print(request.user)
+            address_form.customer_id = request.user.id
             address_form.save()
             return HttpResponseRedirect(reverse("account:addresses"))
     else:

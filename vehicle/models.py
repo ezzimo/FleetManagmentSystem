@@ -144,7 +144,9 @@ class AnssuranceCompany(models.Model):
     logo = models.ImageField(
         verbose_name=_("Logo"), help_text=_("link to Anssurance Company logo"), upload_to="images/anssurance_company/"
     )
-    email = models.CharField(verbose_name=_("Email"), help_text=_("Anssurance Company Email"), max_length=65)
+    email = models.EmailField(
+        verbose_name=_("Email"), help_text=_("Anssurance Company Email"), max_length=65, unique=True
+    )
     phone_number = PhoneNumberField(unique=True, null=False, blank=False)
     seconde_phone_number = PhoneNumberField(null=True, blank=True)
     address = models.CharField(verbose_name=_("Address"), help_text=_("Anssurance Company Address"), max_length=255)

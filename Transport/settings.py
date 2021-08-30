@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "vehicle",
     "phonenumber_field",
+    "account",
 ]
 
 MIDDLEWARE = [
@@ -115,3 +116,10 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 # Media files
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
+# Customized user model
+AUTH_USER_MODEL = "account.User"
+LOGIN_REDIRECT_URL = "/account/dashboard"
+LOGIN_URL = "/account/login/"
+
+# activation email setting
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

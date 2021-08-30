@@ -20,9 +20,12 @@
     {% endfor %}
     {% endif %}
 
-    <label>{{ form.name.label}} <span class="text-muted small"> (Required)
+    <label>{{ form.first_name.label}} <span class="text-muted small"> (Required)
         </span></label>
-    {{ form.name }}
+    {{ form.first_name }}
+    <label>{{ form.last_name.label}} <span class="text-muted small"> (Required)
+        </span></label>
+    {{ form.last_name }}
     <label> {{form.email.label}} <span class="text-muted small"> (Required) </span></label>
     {{ form.email }}
     <label>{{ form.password.label}}<span class="text-muted mb-4"> (Required) </span></label>
