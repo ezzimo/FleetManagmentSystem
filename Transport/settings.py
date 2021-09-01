@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     "vehicle",
     "phonenumber_field",
     "account",
+    "deliveries",
 ]
 
 MIDDLEWARE = [
