@@ -26,7 +26,6 @@ class Delivery(models.Model):
     invoice = models.BooleanField(_("check if you want an invoice"), default=False)
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
-    total_paid = models.DecimalField(max_digits=5, decimal_places=2)
     delivery_key = models.CharField(max_length=200)
     billing_status = models.BooleanField(default=False)
     delivery_status = models.BooleanField(default=False)

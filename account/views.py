@@ -98,7 +98,6 @@ def add_address(request):
         address_form = UserAddressForm(data=request.POST)
         if address_form.is_valid():
             address_form = address_form.save(commit=False)
-            print(request.user)
             address_form.customer_id = request.user.id
             address_form.save()
             return HttpResponseRedirect(reverse("account:addresses"))

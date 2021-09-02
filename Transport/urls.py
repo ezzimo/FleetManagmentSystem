@@ -22,6 +22,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("vehicle/", include("vehicle.urls", namespace="vehicle")),
     path("account/", include("account.urls", namespace="account")),
+    path("delivery/", include("deliveries.urls", namespace="delivery")),
 ]
 
 if settings.DEBUG:
