@@ -14,7 +14,7 @@ SECRET_KEY = "_2@h69+r5ejrwc^qxs8shk^=%!7i=%e*+nql68#jmug9+tre%^"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+ALLOWED_HOSTS = ["https://transmng.herokuapp.com/", "127.0.0.1", "localhost"]
 
 
 # Application definition

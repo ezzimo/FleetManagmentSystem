@@ -1,5 +1,5 @@
 from django import forms
-from django.forms import fields
+from django.forms import fields, widgets
 from django.utils.translation import gettext_lazy as _
 
 from .models import Delivery, DeliveryDetails, Round, Subcontractor
@@ -24,14 +24,22 @@ class UserDeliveryForm(forms.ModelForm):
             "billing_status",
             "delivery_status",
         ]
+        widgets = {
+            "operation_date": forms.DateInput(
+                format=("%d %B %Y"),
+                attrs={"class": "form-control mb-2 delivery-form", "placeholder": "Select a date"},
+            ),
+            "document": forms.FileInput(attrs={"multiple": True}),
+            "pickup_address": forms.Select(),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["full_name_reciever"].widget.attrs.update(
-            {"class": "form-control mb-2 delivery-form", "Placeholder": "full name reciever"}
+            {"class": "form-control mb-2 delivery-form", "Placeholder": "full name reciever "}
         )
         self.fields["pickup_address"].widget.attrs.update(
-            {"class": "form-control mb-2 delivery-form", "Placeholder": "pickup address "}
+            {"class": "form-control mb-2 dropdown delivery-form", "Placeholder": "pickup address "}
         )
         self.fields["destination_address"].widget.attrs.update(
             {"class": "form-control mb-2 delivery-form", "Placeholder": "destination address"}
@@ -41,9 +49,6 @@ class UserDeliveryForm(forms.ModelForm):
         )
         self.fields["destination_post_code"].widget.attrs.update(
             {"class": "form-control mb-2 delivery-form", "Placeholder": "Post Code"}
-        )
-        self.fields["operation_date"].widget.attrs.update(
-            {"class": "form-control mb-2 delivery-form", "Placeholder": "operation date"}
         )
         self.fields["boxes_number"].widget.attrs.update(
             {"class": "form-control mb-2 delivery-form", "Placeholder": "boxes number"}
@@ -58,102 +63,140 @@ class UserDeliveryForm(forms.ModelForm):
             {"multiple": True, "class": "form-control mb-2 delivery-form", "Placeholder": "document"}
         )
         self.fields["invoice"].widget.attrs.update(
-            {"class": "form-control mb-2 delivery-form", "Placeholder": "invoice"}
+            {
+                "type": "checkbox",
+                "class": "form-check-input delivery-form",
+                "Placeholder": "delivery status",
+            }
         )
         self.fields["delivery_key"].widget.attrs.update(
             {"class": "form-control mb-2 delivery-form", "Placeholder": "delivery key"}
         )
         self.fields["billing_status"].widget.attrs.update(
-            {"class": "form-control mb-2 delivery-form", "Placeholder": "billing status"}
+            {
+                "type": "checkbox",
+                "class": "mb-2 form-check-input delivery-form",
+                "Placeholder": "delivery status",
+            }
         )
         self.fields["delivery_status"].widget.attrs.update(
-            {"class": "form-control mb-2 delivery-form", "Placeholder": "delivery status"}
+            {
+                "type": "checkbox",
+                "class": "mb-2 form-check-input delivery-form",
+                "Placeholder": "delivery status",
+            }
         )
 
 
-"""
-class UserEditForm(forms.ModelForm):
+class DeliveryDetailsForm(forms.ModelForm):
 
-    email = forms.EmailField(
-        label="Account email (can not be changed)",
-        max_length=200,
-        widget=forms.TextInput(
-            attrs={"class": "form-control mb-3", "placeholder": "email", "id": "form-email", "readonly": "readonly"}
+    delivery = forms.CharField(
+        label="delivery",
+        widget=forms.Select(
+            attrs={"class": "form-control mb-3", "placeholder": "delivery", "id": "form-delivery-details"}
         ),
     )
-    first_name = forms.CharField(
-        label="User name",
-        min_length=4,
-        max_length=50,
-        widget=forms.TextInput(
-            attrs={"class": "form-control mb-3", "placeholder": "first name", "id": "form-firstname"}
+    round = forms.CharField(
+        label="Round",
+        widget=forms.Select(attrs={"class": "form-control mb-3", "placeholder": "Round", "id": "form-round"}),
+    )
+    is_subcontract = forms.BooleanField(
+        label="Check if Subcontractor",
+        widget=forms.RadioSelect(
+            attrs={"class": "form-control mb-3", "placeholder": "Last name", "id": "form-is-subcontractor"}
         ),
     )
-    last_name = forms.CharField(
-        label="User name",
-        min_length=4,
-        max_length=50,
-        widget=forms.TextInput(
-            attrs={"class": "form-control mb-3", "placeholder": "Last name", "id": "form-lastname"}
+    subcontractor = forms.CharField(
+        label="Subcontractor",
+        widget=forms.Select(
+            attrs={"class": "form-control mb-3", "placeholder": "mobile number", "id": "form-subcontractor"}
         ),
     )
-    mobile = forms.CharField(
-        label="User mobile 1",
-        min_length=4,
-        max_length=50,
-        widget=forms.TextInput(
-            attrs={"class": "form-control mb-3", "placeholder": "mobile number", "id": "form-mobile_1"}
+    subcontract_price = forms.DecimalField(
+        label="Subcontractor Price",
+        widget=forms.NumberInput(
+            attrs={
+                "class": "form-control mb-3",
+                "placeholder": "Price Subcontractor if any",
+                "id": "form-Subcontractor-price",
+            }
         ),
     )
-    company_name = forms.CharField(
-        label="Company name",
-        min_length=4,
-        max_length=50,
-        widget=forms.TextInput(
-            attrs={"class": "form-control mb-3", "placeholder": "Company name", "id": "form-company_name"}
-        ),
+    is_loader = forms.BooleanField(
+        label="loader",
+        widget=forms.RadioSelect(attrs={"class": "form-control mb-3", "placeholder": "Company ice", "id": "form-ice"}),
     )
-    ice = forms.CharField(
-        label="Company ice",
-        min_length=4,
-        max_length=50,
-        widget=forms.TextInput(attrs={"class": "form-control mb-3", "placeholder": "Company ice", "id": "form-ice"}),
+    loader_price = forms.DecimalField(
+        label="loader price",
+        widget=forms.NumberInput(attrs={"class": "form-control mb-3", "placeholder": "Website", "id": "form-website"}),
     )
-    website = forms.CharField(
-        label="website",
-        widget=forms.TextInput(attrs={"class": "form-control mb-3", "placeholder": "Website", "id": "form-website"}),
-    )
-    mobile_2 = forms.CharField(
-        label="User mobile 2",
-        widget=forms.TextInput(
+    is_commission = forms.BooleanField(
+        label="commission",
+        widget=forms.RadioSelect(
             attrs={"class": "form-control mb-3", "placeholder": "mobile number", "id": "form-mobile_2"}
         ),
     )
-    landline = forms.CharField(
-        label="User landline",
-        widget=forms.TextInput(
+    commission_coast = forms.DecimalField(
+        label="commission coast ",
+        widget=forms.NumberInput(
+            attrs={"class": "form-control mb-3", "placeholder": "landline number", "id": "form-landline"}
+        ),
+    )
+    is_driver_charges = forms.BooleanField(
+        label="driver charges",
+        widget=forms.RadioSelect(
+            attrs={"class": "form-control mb-3", "placeholder": "mobile number", "id": "form-mobile_1"}
+        ),
+    )
+    driver_charges_coast = forms.DecimalField(
+        label="driver charges coast",
+        widget=forms.NumberInput(
+            attrs={"class": "form-control mb-3", "placeholder": "Company name", "id": "form-company_name"}
+        ),
+    )
+    distance = forms.IntegerField(
+        label="distance",
+        widget=forms.NumberInput(attrs={"class": "form-control mb-3", "placeholder": "Company ice", "id": "form-ice"}),
+    )
+    extra_time = forms.DurationField(
+        label="extra time",
+        widget=forms.TimeInput(attrs={"class": "form-control mb-3", "placeholder": "Website", "id": "form-website"}),
+    )
+    extra_time_coast = forms.DecimalField(
+        label="extra time coast",
+        widget=forms.NumberInput(
+            attrs={"class": "form-control mb-3", "placeholder": "mobile number", "id": "form-mobile_2"}
+        ),
+    )
+    delivery_price = forms.DecimalField(
+        label="delivery price",
+        widget=forms.NumberInput(
             attrs={"class": "form-control mb-3", "placeholder": "landline number", "id": "form-landline"}
         ),
     )
 
     class Meta:
-        model = Customer
+        model = DeliveryDetails
         fields = (
-            "email",
-            "first_name",
-            "last_name",
-            "mobile",
-            "company_name",
-            "website",
-            "ice",
-            "mobile_2",
-            "landline",
+            "delivery",
+            "round",
+            "is_subcontract",
+            "subcontractor",
+            "subcontract_price",
+            "is_loader",
+            "loader_price",
+            "is_commission",
+            "commission_coast",
+            "is_driver_charges",
+            "driver_charges_coast",
+            "distance",
+            "extra_time",
+            "extra_time_coast",
+            "delivery_price",
         )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["first_name"].required = True
-        self.fields["last_name"].required = True
-        self.fields["email"].required = True
-        self.fields["mobile"].required = True
-"""
+        self.fields["delivery"].required = True
+        self.fields["round"].required = True
+        self.fields["delivery_price"].required = True

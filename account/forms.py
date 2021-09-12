@@ -3,11 +3,13 @@ from django.contrib.auth.forms import (
     AuthenticationForm,
     PasswordResetForm,
     SetPasswordForm,
+    UserChangeForm,
+    UserCreationForm,
 )
 from django.forms import fields
 from django.utils.translation import gettext_lazy as _
 
-from .models import Address, Customer
+from .models import Address, User
 
 
 class UserAddressForm(forms.ModelForm):
@@ -58,7 +60,19 @@ class UserLoginForm(AuthenticationForm):
     )
 
 
-class RegistrationForm(forms.ModelForm):
+class UserCreationForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ("email",)
+
+
+class UserChangeForm(UserChangeForm):
+    class Meta:
+        model = User
+        fields = ("email",)
+
+
+class RegistrationForm(UserCreationForm):
     first_name = forms.CharField(label=_("Enter First name"), min_length=4, max_length=50, help_text="Required")
     last_name = forms.CharField(label=_("Enter Last name"), min_length=4, max_length=50, help_text="Required")
     email = forms.EmailField(
@@ -68,7 +82,7 @@ class RegistrationForm(forms.ModelForm):
     password2 = forms.CharField(label="Repeat password", widget=forms.PasswordInput)
 
     class Meta:
-        model = Customer
+        model = User
         fields = (
             "first_name",
             "last_name",
@@ -78,7 +92,7 @@ class RegistrationForm(forms.ModelForm):
     def clean_username(self):
         first_name = self.cleaned_data["first_name"].lower()
         last_name = self.cleaned_data["last_name"].lower()
-        r = Customer.objects.filter(first_name=first_name, last_name=last_name)
+        r = User.objects.filter(first_name=first_name, last_name=last_name)
         if r.count():
             raise forms.ValidationError("Name already exists")
         return first_name + " " + last_name
@@ -91,7 +105,7 @@ class RegistrationForm(forms.ModelForm):
 
     def clean_email(self):
         email = self.cleaned_data["email"]
-        if Customer.objects.filter(email=email).exists():
+        if User.objects.filter(email=email).exists():
             raise forms.ValidationError("Please use another Email, that is already taken")
         return email
 
@@ -171,7 +185,7 @@ class UserEditForm(forms.ModelForm):
     )
 
     class Meta:
-        model = Customer
+        model = User
         fields = (
             "email",
             "first_name",
@@ -200,7 +214,7 @@ class PwdResetForm(PasswordResetForm):
 
     def clean_email(self):
         email = self.cleaned_data["email"]
-        usr = Customer.objects.filter(email=email)
+        usr = User.objects.filter(email=email)
         if not usr:
             raise forms.ValidationError("Unfortunatley we can not find that email address")
         return email

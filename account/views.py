@@ -10,7 +10,7 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
 from .forms import RegistrationForm, UserAddressForm, UserEditForm
-from .models import Address, Customer
+from .models import Address, User
 from .token import account_activation_token
 
 
@@ -35,7 +35,7 @@ def edit_details(request):
 
 @login_required
 def delete_user(request):
-    user = Customer.objects.get(user_name=request.user)
+    user = User.objects.get(user_name=request.user)
     user.is_active = False
     user.save()
     logout(request)
@@ -51,6 +51,7 @@ def account_register(request):
             user.email = registerForm.cleaned_data["email"]
             user.set_password(registerForm.cleaned_data["password"])
             user.is_active = False
+            user.is_staff = False
             user.save()
             # Setup confirmation's email
             current_site = get_current_site(request)
@@ -74,11 +75,12 @@ def account_register(request):
 def account_activate(request, uidb64, token):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
-        user = Customer.objects.get(pk=uid)
-    except ():
+        user = User.objects.get(pk=uid)
+    except:
         pass
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
+        user.user_type = "Customer"
         user.save()
         login(request, user)
         return redirect("account:dashboard")

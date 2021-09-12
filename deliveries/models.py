@@ -1,4 +1,4 @@
-from account.models import Address, City, Customer, Driver
+from account.models import Address, City, User
 from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -6,8 +6,8 @@ from vehicle.models import Vehicle
 
 
 class Delivery(models.Model):
-    user = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name=_("delivery_user"))
-    full_name_reciever = models.CharField(max_length=50)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name=_("delivery_user"))
+    full_name_reciever = models.CharField(_("Reciever Full Name"), max_length=50)
     pickup_address = models.ForeignKey(Address, on_delete=models.CASCADE, related_name=_("pickup_address"))
     destination_address = models.CharField(max_length=250)
     destination_city = models.ForeignKey(City, on_delete=models.CASCADE, related_name=_("delivery_city"))
@@ -81,6 +81,7 @@ class Subcontractor(models.Model):
 
 
 class DeliveryDetails(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name=_("responsable_user"))
     delivery = models.ForeignKey(Delivery, on_delete=models.CASCADE, related_name=_("delivery"))
     round = models.ForeignKey(Round, on_delete=models.CASCADE, related_name=_("round"))
     is_subcontract = models.BooleanField(default=False)
@@ -110,7 +111,7 @@ class DeliveryDetails(models.Model):
 
 class DeliveryItem(models.Model):
     delivery = models.ForeignKey(Delivery, related_name="deliveries", on_delete=models.CASCADE)
-    product = models.ForeignKey(Customer, related_name="customer_items", on_delete=models.CASCADE)
+    product = models.ForeignKey(User, related_name="customer_items", on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=5, decimal_places=2)
     quantity = models.PositiveIntegerField(default=1)
 

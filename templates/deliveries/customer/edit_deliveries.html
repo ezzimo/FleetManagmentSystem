@@ -1,4 +1,5 @@
 {% extends "../../account/sub_base.html" %}
+{% load l10n %}
 {% block title %}Edit Delivery{% endblock %}
 
 {% block sub_content %}
@@ -6,7 +7,7 @@
   <h1 class="h3">Create/Edit Delivery</h1>
   <div>Add a new <b>Delivery</b> </div>
   <hr />
-  <form name="delivery_form" class="delivery_form" method="post" enctype="multipart/form-data">
+  <form name="delivery_form" class="delivery-form" method="post" enctype="multipart/form-data">
     {% if form.errors %}
     {{form.errors}}
     <div class="alert alert-primary" role="alert">
@@ -14,45 +15,82 @@
     </div>
     {% endif %}
     {% csrf_token %}
-    <label class="small fw-bold">{{ form.full_name_reciever.label}}</label>
-    {{ form.full_name_reciever }}
-    <label class="small fw-bold">{{ form.pickup_address.label}}</label>
-    {{ form.pickup_address }}
-    <label class="small fw-bold">{{ form.destination_address.label}}</label>
-    {{ form.destination_address }}
-    <label class="small fw-bold">{{ form.destination_city.label}}</label>
-    {{ form.destination_city }}
-    <label class="small fw-bold">{{ form.destination_post_code.label}}</label>
-    {{ form.destination_post_code }}
-    <label class="small fw-bold">{{ form.operation_date.label}}</label>
-    {{ form.operation_date }}
-    <label class="small fw-bold">{{ form.boxes_number.label}}</label>
-    {{ form.boxes_number }}
-    <label class="small fw-bold">{{ form.boxes_wight.label}}</label>
-    {{ form.boxes_wight }}
-    <label class="small fw-bold">{{ form.boxes_volume.label}}</label>
-    {{ form.boxes_volume }}
-    <label class="small fw-bold">{{ form.document.label}}</label>
-    {{ form.document }}
-    <label class="small fw-bold">{{ form.invoice.label}}</label>
-    {{ form.invoice }}
-    <label class="small fw-bold">{{ form.delivery_key.label}}</label>
-    {{ form.delivery_key }}
-    <label class="small fw-bold">{{ form.delivery_status.label}}</label>
-    {{ form.delivery_status }}
-    <button class="btn btn-primary btn-block py-2 mb-4 mt-4 fw-bold w-100" type="button" value="Submit" onclick="submitForm()">
-    Add Address
+    <div class="form-group">
+      <label class="small fw-bold">{{ form.full_name_reciever.label}}</label>
+      {{ form.full_name_reciever }}
+    </div>
+
+    <div class="form-row">
+        <div class="col-md-3 mb-3">
+              <label class="small fw-bold">{{ form.pickup_address.label}}</label>
+              {{form.pickup_address }}
+        </div>
+        <div class="col-md-3 mb-3">
+              <label class="small fw-bold">{{ form.destination_address.label}}</label>
+              {{ form.destination_address }}
+        </div>
+        <div class="col-md-3 mb-3">
+              <label class="small fw-bold">{{ form.destination_city.label}}</label>
+              {{ form.destination_city }}
+        </div>
+        <div class="col-md-3 mb-3">
+              <label class="small fw-bold">{{ form.destination_post_code.label}}</label>
+              {{ form.destination_post_code }}
+
+        </div>
+    </div>
+    <div class="form-group">
+      <label class="small fw-bold">{{ form.operation_date.label}}</label>
+      {{ form.operation_date }}
+    </div>
+    <div>
+      <label class="small fw-bold">{{ form.boxes_number.label}}</label>
+      {{ form.boxes_number }}
+    </div>
+    <div>
+      <label class="small fw-bold">{{ form.boxes_wight.label}}</label>
+      {{ form.boxes_wight }}
+    </div>
+    <div>
+      <label class="small fw-bold">{{ form.boxes_volume.label}}</label>
+      {{ form.boxes_volume }}
+    </div>
+    <div>
+      <label class="small fw-bold">{{ form.document.label}}</label>
+      {{ form.document }}
+    </div>
+    <div class="form-group form-check">
+      <label class="small fw-bold">{{ form.invoice.label}}</label>
+      {{ form.invoice }}
+    </div>
+    <div>
+      <label class="small fw-bold">{{ form.delivery_key.label}}</label>
+      {{ form.delivery_key }}
+    </div>
+
+    <div class="form-group form-check">
+      <label class="small fw-bold">{{ form.billing_status.label}}</label>
+      {{ form.billing_status }}
+    </div>
+
+    <div class="form-group form-check">
+      <label class="small fw-bold">{{ form.delivery_status.label}}</label>
+      {{ form.delivery_status }}
+    </div>
+    <button class="btn btn-primary btn-block py-2 mb-4 mt-4 fw-bold w-100" type="button" value="Submit"
+      onclick="submitForm()">
+      Add Delivery
     </button>
   </form>
 
 </div>
 
-<script> 
-function submitForm() {
-   var form = document.getElementsByName('delivery_form')[0];
-   form.submit(); // Submit the form
-   form.reset();  // Reset all form data
-   return false; // Prevent page refresh
-}
+<script>
+  function submitForm() {
+    var form = document.getElementsByName('delivery_form')[0];
+    form.submit(); // Submit the form
+    form.reset(); // Reset all form data
+    return false; // Prevent page refresh
+  }
 </script>
 {% endblock %}
