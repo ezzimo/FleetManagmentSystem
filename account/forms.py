@@ -12,9 +12,11 @@ from django.db import models
 from django.db.models.enums import Choices
 from django.forms import fields
 from django.utils.translation import gettext_lazy as _
-from mapwidgets.widgets import GooglePointFieldWidget, GoogleStaticOverlayMapWidget
 
 from .models import Address, Client, User
+
+# from mapwidgets.widgets import GooglePointFieldWidget, GoogleStaticOverlayMapWidget
+
 
 
 class UserAddressForm(forms.ModelForm):
