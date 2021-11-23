@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 
 from . import views
 from .forms import PwdResetConfirmForm, PwdResetForm, UserLoginForm
+from .views import *
 
 app_name = "account"
 
@@ -15,6 +16,11 @@ urlpatterns = [
     ),
     path("logout/", auth_views.LogoutView.as_view(next_page="/account/login/"), name="logout"),
     path("register/", views.account_register, name="register"),
+    path(
+        "registration_confirmed",
+        TemplateView.as_view(template_name="account/registration/add_client_confirm.html"),
+        name="register_email_confirm",
+    ),
     path("activate/<slug:uidb64>/<slug:token>/", views.account_activate, name="activate"),
     path(
         "password_reset/",
@@ -52,6 +58,20 @@ urlpatterns = [
         "profile/delete_confirm/",
         TemplateView.as_view(template_name="account/dashboard/delete_confirm.html"),
         name="delete_confirmation",
+    ),
+    path("add_client/", views.add_client, name="add_client"),
+    path("clients", views.view_clients, name="clients"),
+    path("<int:pk>/", ClientDetailleView.as_view(), name="client-detail"),
+    path(
+        "add_client_confirm/",
+        TemplateView.as_view(template_name="account/registration/add_client_confirm.html"),
+        name="add_client_confirm",
+    ),
+    path("profile/delete_client/<int:pk>/", views.delete_client, name="delete_client"),
+    path(
+        "profile/delete_confirm/",
+        TemplateView.as_view(template_name="account/dashboard/delete_confirm_client.html"),
+        name="delete_confirmation_client",
     ),
     path("addresses/", views.view_address, name="addresses"),
     path("add_address/", views.add_address, name="add_address"),

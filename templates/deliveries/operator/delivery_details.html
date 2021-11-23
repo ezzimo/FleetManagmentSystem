@@ -1,0 +1,186 @@
+{% extends "../../account/sub_base.html" %}
+{% load l10n %}
+{% block title %}Edit Delivery{% endblock %}
+
+{% block sub_content %}
+<div class=" col-lg-10 mx-auto">
+{% csrf_token %}
+    <h1 class="h3">Livraison</h1>
+    <div class="h5">Detailles <b>Livraison</b> </div>
+    <hr />
+    <div class="row card">
+        <div class="h6 card-header"> <strong>Information Client</strong> </div>
+        <div class="row row-cols-1 row-cols-md-3 card-body p-3 m-0 g-4 border-dark">
+            <div class="form-group col">
+                <dt> Client: </dt>
+                <dd>
+                    {{ object.user }}
+                </dd>
+            </div>
+            <div class="form-group col">
+                <dt> Company: </dt>
+                <dd>
+                    {{ object.user.company_name }}
+                </dd>
+            </div>
+            <div class="form-group col">
+                <dt> Contact: </dt>
+                <dd>
+                    Phone: {{ object.user.mobile }} <br>
+                    Email: {{ object.user.email}}
+                </dd>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row card">
+        <div class="h6 card-header"> Information Trajet</div>
+        <div class="row row-cols-1 card-body p-0 m-0 g-4 border-dark">
+            <div class="col">
+                <table class="table table-sm table-bordered table-striped table-hover" style=" border: solid 1px #aaa999; text-align: center;">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col"> Ramassage</th>
+                            <th scope="col">Destination</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">Contact:</th>
+                            <td>{{object.user_pickup}}</td>
+                            <td>{{object.user_reciever}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"> Lieu:</th>
+                            <td> {{object.pickup_address }}</td>
+                            <td>{{ object.destination_address }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Ville</th>
+                            <td> {{object.pickup_address.town_city}}</td>
+                            <td>{{ object.destination_address.town_city }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Adresse</th>
+                            <td> {{object.pickup_address.address_line_1}} <br> {{object.pickup_address.address_line_2}}
+                            </td>
+                            <td>{{ object.destination_address.address_line_1}} <br>
+                                {{object.destination_address.address_line_2}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Remarque:</th>
+                            <td>{% if object.pickup_address.delivery_instructions %}
+                                {{object.pickup_address.delivery_instructions}}
+                                {% endif %}</td>
+                            <td>{% if object.destination_address.delivery_instructions %}
+                                {{ object.destination_address.delivery_instructions }}
+                                {% endif %}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="row row-cols-1 row-cols-md-4 g-4 border border-light">
+                <div class="col">
+                    <dt>
+                        Date Operation:
+                    </dt>
+                    <dd>
+                        {{ object.operation_date | date:"d-M-Y"  }}
+                    </dd>
+                </div>
+                <div class="col">
+                    <dt>
+                        Heure Operation:
+                    </dt>
+                    <dd>
+                        {{ object.operation_time }}
+                    </dd>
+                </div>
+                <div class="col">
+                    <dt>
+                        Kilométrage Operation:
+                    </dt>
+                    <dd>
+                        {{ object.google_distance_value }} Km
+                    </dd>
+                </div>
+                <div class="col">
+                    <dt>
+                        Durée Trajet:
+                    </dt>
+                    <dd>
+                        {{ object.google_duration_value }}
+                    </dd>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row card">
+        <div class="h6 card-header"> Information Marchandise</div>
+        <div class="row row-cols-1 row-cols-md-3 card-body p-0 m-0 g-4 border-dark">
+            <div class="col">
+                <dt>
+                    Quantitée:
+                </dt>
+                <dd>
+                    {{ object.boxes_number }} unitées
+                </dd>
+            </div>
+            <div class="col">
+                <dt>
+                    Poids:
+                </dt>
+                <dd>
+                    {{ object.boxes_wight }} Kg
+                </dd>
+            </div>
+            {% if object.document %}
+            <div class="col">
+                <dt>
+                    Documents:
+                </dt>
+                <dd>
+                    <a href="{{ object.document.url }}" target="_blank" rel="noopener noreferrer">document</a>
+                </dd>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <hr>
+    <div class="row card">
+        <div class="h6 card-header"> Statut Livraison</div>
+        <div class="row row-cols-1 row-cols-md-3 card-body p-0 m-0 g-4 border-dark">
+            <div class="col">
+                <dt>
+                    Facturation:
+                </dt>
+                <dd>
+                    <input type="hidden" name="test_id"> 
+            {% if object.billing_status %}
+                <label>
+                    <input type="checkbox" name="{{object.id}}" checked> Facture demandée
+                </label>
+            {% else %}
+                <label>
+                    <input type="checkbox" name="{{object.id}}"> Facture non demandée
+                </label>
+            {% endif %}
+
+                </dd>
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-outline-success py-2 mb-4 mt-4 fw-bold " role="button" type="button">
+        <a href="{{view.get_success_url}}" class="text-reset">Traiter</a> 
+    </button>
+            
+    </button>
+    {% comment %} <button type="button" id="add-button" class="btn btn-success fw500"><a {% endcomment %}
+                    {% comment %} href="{% url 'vehicle:vehicle-update' vehicle.id %}">Update</a></button> {% endcomment %}
+    {% comment %} <button type="button" id="add-button" class="btn btn-light fw500"><a {% endcomment %}
+                    {% comment %} href="{% url 'vehicle:vehicle-delete' vehicle.id %}" class="btn btn-light fw500">Delete</a></button> {% endcomment %}
+
+</div>
+{% endblock %}

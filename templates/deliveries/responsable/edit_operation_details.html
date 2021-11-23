@@ -1,0 +1,154 @@
+{% extends "../../account/sub_base.html" %}
+{% load l10n %}
+{% block title %}Edit Delivery{% endblock %}
+
+{% block sub_content %}
+<div class=" col-lg-10 mx-auto">
+  <h1 class="h3">Information de Livraison</h1>
+  <div>Ajouter nouvelle <b>Livraison</b> </div>
+  <hr>
+  <form name="delivery_form" class="delivery-form" method="post" enctype="multipart/form-data">
+    {% if form.errors %}
+    {{form.errors}}
+    <div class="alert alert-primary" role="alert">
+      Error: Veuillez Réessayer!
+    </div>
+    {% endif %}
+    {% csrf_token %}
+    <div class="row row-cols-1 row-cols-md-2 p-3 g-4 border-dark form-group">
+      <div class="col mb-3">
+        <label class="small fw-bold">{{ form.delivery.label}}</label>
+        {{ form.delivery }}
+      </div>
+      <div class="col mb-3">
+        <label class="small fw-bold">{{ form.round.label}}</label>
+        {{ form.round }}
+      </div>
+    </div>
+    <div class="row row-cols-1 row-cols-md-2 p-3 g-4 border-dark form-group">
+      <div class="col mb-3">
+        <label class="small fw-bold">{{ form.distance.label}}</label>
+         {{ form.distance }} Km
+      </div>
+      <div class="col mb-3">
+        <label class="small fw-bold">{{ form.durée.label}}</label>
+       {{ form.durée }}
+      </div>
+    </div>
+    <div class="container p-4 border form-group">
+      <div class="row">
+        <h6>Information sous traitance :</h6>
+      </div>
+      <div class="row row-cols-1 row-cols-md-3 p-3 g-4">
+        <div class="col mb-3 form-check">
+          <label class="small fw-bold">{{ form.is_subcontract.label}}</label>
+          {{ form.is_subcontract }}
+        </div>
+        <div class="col mb-3">
+          <label class="small fw-bold">{{ form.subcontractor.label}}</label>
+          {{ form.subcontractor }}
+        </div>
+        <div class="col mb-3">
+          <label class="small fw-bold">{{ form.subcontract_price.label}}</label>
+          {{ form.subcontract_price }}
+        </div>
+      </div>
+    </div>
+    <div class="row row-cols-1 row-cols-md-2 p-3 g-4">
+      <div class="col mb-3 form-check">
+        <div class="container p-4 border form-group">
+          <div class="row">
+            <h6>Information aide Chauffeur :</h6>
+          </div>
+          <div class="row row-cols-1 p-3 g-4">
+            <div class="col mb-3 form-check">
+              <label class="small fw-bold">{{ form.is_loader.label}}</label>
+              {{ form.is_loader }}
+            </div>
+            <div class="col mb-3">
+              <label class="small fw-bold">{{ form.loader_price.label}}</label>
+              {{ form.loader_price }}
+            </div>
+          </div>
+        </div>
+        <div class="container p-4 border form-group">
+          <div class="row">
+            <h6>Information Commission :</h6>
+          </div>
+          <div class="row row-cols-1 p-3 g-4">
+            <div class="col mb-3 form-check">
+              <label class="small fw-bold">{{ form.is_commission.label}}</label>
+              {{ form.is_commission }}
+            </div>
+            <div class="col mb-3">
+              <label class="small fw-bold">{{ form.commission_coast.label}}</label>
+              {{ form.commission_coast }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col mb-3 form-check">
+        <div class="container p-4 border form-group">
+          <div class="row">
+            <h6>Information Charge Chauffeur :</h6>
+          </div>
+          <div class="row row-cols-1 p-3 g-4">
+            <div class="col mb-3 form-check">
+              <label class="small fw-bold">{{ form.is_driver_charges.label}}</label>
+              {{ form.is_driver_charges }}
+            </div>
+            <div class="col mb-3">
+              <label class="small fw-bold">{{ form.driver_charges_coast.label}}</label>
+              {{ form.driver_charges_coast }}
+            </div>
+          </div>
+        </div>
+        <div class="container p-4 border form-group">
+          <div class="row">
+            <h6>Information Temps supplementaire :</h6>
+          </div>
+          <div class="row row-cols-1 p-3 g-4">
+            <div class="col mb-3 form-check">
+              <label class="small fw-bold">{{ form.extra_time.label}}</label>
+              {{ form.extra_time }}
+            </div>
+            <div class="col mb-3">
+              <label class="small fw-bold">{{ form.extra_time_coast.label}}</label>
+              {{ form.extra_time_coast }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <span>
+      <hr></span>
+    <div class="row row-cols-1 p-3 g-4 border-dark form-group">
+      <div class="row">
+        <h6>Coùt <span>Totale </span> de La Livraison :</h6>
+      </div>
+      <div class="row row-cols-1 p-3 g-4">
+        <div class="col mb-3">
+          <label class="small fw-bold">{{ form.delivery_price.label}}</label>
+          {{ form.delivery_price }}
+        </div>
+      </div>
+    </div>
+</div>
+
+<button class="btn btn-primary btn-block py-2 mb-4 mt-4 fw-bold w-100" type="button" value="Submit"
+  onclick="submitForm()">
+  Add Delivery
+</button>
+</form>
+
+</div>
+
+<script>
+  function submitForm() {
+    var form = document.getElementsByName('delivery_form')[0];
+    form.submit(); // Submit the form
+    form.reset(); // Reset all form data
+    return false; // Prevent page refresh
+  }
+</script>
+{% endblock %}

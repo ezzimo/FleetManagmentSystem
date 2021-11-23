@@ -1,20 +1,42 @@
-from account.models import Address, City, User
+import datetime
+import json
+
+import requests
+from account.models import Address, Bank, City, Client, User
 from django.conf import settings
+from django.contrib.gis.measure import Distance
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from humanfriendly import format_timespan
 from vehicle.models import Vehicle
 
 
 class Delivery(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name=_("delivery_user"))
-    full_name_reciever = models.CharField(_("Reciever Full Name"), max_length=50)
+    user = models.ForeignKey(
+        Client, on_delete=models.CASCADE, verbose_name=_("Client"), related_name=_("delivery_user")
+    )
+    user_pickup = models.ForeignKey(
+        Client, on_delete=models.CASCADE, verbose_name=_("donneur"), related_name=_("user_pickup"), default=False
+    )
     pickup_address = models.ForeignKey(Address, on_delete=models.CASCADE, related_name=_("pickup_address"))
-    destination_address = models.CharField(max_length=250)
-    destination_city = models.ForeignKey(City, on_delete=models.CASCADE, related_name=_("delivery_city"))
-    destination_post_code = models.CharField(max_length=20)
+    user_reciever = models.ForeignKey(
+        Client,
+        on_delete=models.CASCADE,
+        verbose_name=_("receveur"),
+        related_name=_("user_reciever"),
+        default=False,
+    )
+    destination_address = models.ForeignKey(Address, on_delete=models.CASCADE, related_name=_("destination_address"))
     operation_date = models.DateField(
         _("desired pickup date"), auto_now=False, auto_now_add=False, blank=False, null=False
     )
+    operation_time = models.TimeField(
+        _("desired pickup date"), auto_now=False, auto_now_add=False, blank=False, null=False
+    )
+    google_distance_value = models.DecimalField(max_digits=7, decimal_places=2, blank=True, null=True)
+    geo_distance_value = models.DecimalField(max_digits=7, decimal_places=2, blank=True, null=True)
+    google_duration_value = models.DurationField(blank=True, null=True)
     boxes_number = models.PositiveIntegerField(_("Number of Boxes"), default=1)
     boxes_wight = models.PositiveIntegerField(_("Boxes Wight"), default=1)
     boxes_volume = models.PositiveIntegerField(_("Boxes Volume"), default=0)
@@ -22,8 +44,11 @@ class Delivery(models.Model):
         help_text=_("Delivery Documets"),
         verbose_name=_("Delivery Certificates"),
         upload_to="documents/deliveries_documents/",
+        blank=True,
+        null=True,
     )
     invoice = models.BooleanField(_("check if you want an invoice"), default=False)
+    confirmed = models.BooleanField(_("confirmed Delivery"), default=False)
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
     delivery_key = models.CharField(max_length=200)
@@ -35,8 +60,55 @@ class Delivery(models.Model):
         verbose_name = _("Delivery")
         verbose_name_plural = _("Deliveries")
 
+    def get_absolute_url(self):
+        return reverse("delivery:unconf-delivery-details", args=[self.id])
+
+    def save(self, *args, **kwargs):
+        distance = self.distance
+        self.google_distance_value = distance["google_distance"]
+        self.geo_distance_value = distance["distance"]
+        self.google_duration_value = distance["google_duration"]
+        super().save(*args, **kwargs)
+
+    @property
+    def distance(self):
+        distance = Distance(
+            m=self.pickup_address.address_point.transform(32148, clone=True).distance(
+                self.destination_address.address_point.transform(32148, clone=True)
+            )
+        )
+        origin_lat = self.pickup_address.address_point.coords[1]
+        origin_lon = self.pickup_address.address_point.coords[0]
+        destination_lat = self.destination_address.address_point.coords[1]
+        destination_lon = self.destination_address.address_point.coords[0]
+        origin = f"{origin_lat},{origin_lon}"
+        destination = f"{destination_lat},{destination_lon}"
+        gl_json_distance = requests.get(
+            "https://maps.googleapis.com/maps/api/directions/json?",
+            params={
+                "origin": origin,
+                "destination": destination,
+                "key": settings.GOOGLE_API_KEY,
+            },
+        )
+        gl_distance = gl_json_distance.json()
+        distance_gl = 0
+        duration_gl = 0
+        context = {}
+        if gl_distance["status"] == "OK":
+            routes = gl_distance["routes"][0]["legs"]
+            for route in range(len(routes)):
+                distance_gl += int(routes[route]["distance"]["value"])
+                duration_gl += int(routes[route]["duration"]["value"])
+        context["google_distance"] = f"{round(distance_gl / 1000, 2)}"
+        context["google_duration"] = datetime.timedelta(seconds=duration_gl)
+        context["distance"] = f"{round(distance.m / 1000, 2)}"
+        print(context)
+
+        return context
+
     def __str__(self):
-        return str(self.created_at)
+        return str(self.delivery_key)
 
 
 class Round(models.Model):
@@ -76,27 +148,31 @@ class Subcontractor(models.Model):
         verbose_name = "Subcontractor"
         verbose_name_plural = "Subcontractor"
 
+    def get_absolute_url(self):
+        return reverse("delivery:subcontractor-details", args=[self.id])
+
     def __str__(self):
         return self.first_name + " " + self.last_name
 
 
-class DeliveryDetails(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name=_("responsable_user"))
+class OperationDetails(models.Model):
     delivery = models.ForeignKey(Delivery, on_delete=models.CASCADE, related_name=_("delivery"))
-    round = models.ForeignKey(Round, on_delete=models.CASCADE, related_name=_("round"))
-    is_subcontract = models.BooleanField(default=False)
-    subcontractor = models.ForeignKey(Subcontractor, on_delete=models.CASCADE, related_name=_("subcontractor"))
-    subcontract_price = models.DecimalField(max_digits=7, decimal_places=2)
-    is_loader = models.BooleanField(default=False)
-    loader_price = models.DecimalField(max_digits=7, decimal_places=2)
-    is_commission = models.BooleanField(default=False)
-    commission_coast = models.DecimalField(max_digits=7, decimal_places=2)
-    is_driver_charges = models.BooleanField(default=False)
-    driver_charges_coast = models.DecimalField(max_digits=7, decimal_places=2)
-    distance = models.PositiveSmallIntegerField(_("Approximative distance max=32767 km"), default=1)
-    extra_time = models.DurationField(_("Extra time taken"))
-    extra_time_coast = models.DecimalField(max_digits=7, decimal_places=2)
-    delivery_price = models.DecimalField(max_digits=7, decimal_places=2)
+    round = models.ForeignKey(Round, on_delete=models.CASCADE, related_name=_("round"), blank=True, null=True)
+    is_subcontract = models.BooleanField(default=False, blank=True, null=True)
+    subcontractor = models.ForeignKey(
+        Subcontractor, on_delete=models.CASCADE, related_name=_("subcontractor"), blank=True, null=True
+    )
+    subcontract_price = models.DecimalField(max_digits=7, decimal_places=2, blank=True, null=True)
+    is_loader = models.BooleanField(default=False, blank=True, null=True)
+    loader_price = models.DecimalField(max_digits=7, decimal_places=2, blank=True, null=True)
+    is_commission = models.BooleanField(default=False, blank=True, null=True)
+    commission_coast = models.DecimalField(max_digits=7, decimal_places=2, blank=True, null=True)
+    is_driver_charges = models.BooleanField(default=False, blank=True, null=True)
+    driver_charges_coast = models.DecimalField(max_digits=7, decimal_places=2, blank=True, null=True)
+    distance = models.DecimalField(_("Distance Approximative "), max_digits=7, decimal_places=2)
+    extra_time = models.DurationField(_("Extra time taken"), blank=True, null=True)
+    extra_time_coast = models.DecimalField(max_digits=7, decimal_places=2, blank=True, null=True)
+    delivery_price = models.DecimalField(max_digits=7, decimal_places=2, blank=True, null=True)
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
 
@@ -104,6 +180,9 @@ class DeliveryDetails(models.Model):
         ordering = ("-created_at",)
         verbose_name = _("Delivery Details")
         verbose_name_plural = _("Deliveries Details")
+
+    def get_absolute_url(self):
+        return reverse("delivery:operation-detail", args=[self.id])
 
     def __str__(self):
         return str(self.created_at)

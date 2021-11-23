@@ -1,9 +1,20 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.contrib.gis.admin import OSMGeoAdmin
 
 from account.forms import RegistrationForm, UserChangeForm, UserCreationForm
 
-from .models import Address, Bank, City, EmployeeSalary, Region, User
+from .models import (
+    Address,
+    Bank,
+    City,
+    Client,
+    Company,
+    EmployeeSalary,
+    FreeAddress,
+    Region,
+    User,
+)
 
 
 @admin.register(User)
@@ -83,8 +94,6 @@ class UserAdmin(UserAdmin):
             {
                 "fields": (
                     "company_name",
-                    "website",
-                    "ice",
                     "mobile_2",
                     "landline",
                 )
@@ -142,8 +151,6 @@ class UserAdmin(UserAdmin):
             {
                 "fields": (
                     "company_name",
-                    "website",
-                    "ice",
                     "mobile_2",
                     "landline",
                 )
@@ -154,7 +161,29 @@ class UserAdmin(UserAdmin):
 
 
 admin.site.register(Bank)
+admin.site.register(Client)
 admin.site.register(Region)
 admin.site.register(City)
 admin.site.register(EmployeeSalary)
-admin.site.register(Address)
+admin.site.register(FreeAddress)
+admin.site.register(Company)
+
+
+@admin.register(Address)
+class AddressAdmin(OSMGeoAdmin):
+    list_display = (
+        "address_name",
+        "customer",
+        "phone",
+        "postcode",
+        "address_line_1",
+        "address_line_2",
+        "town_city",
+        "town_region",
+        "address_point",
+        "delivery_instructions",
+        "created_at",
+        "updated",
+        "default",
+        "is_active",
+    )

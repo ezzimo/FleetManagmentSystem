@@ -1,8 +1,8 @@
 from django.contrib import admin
 
-from .models import Delivery, DeliveryDetails, Round, Subcontractor
+from .models import Delivery, OperationDetails, Round, Subcontractor
 
 admin.site.register(Delivery)
-admin.site.register(DeliveryDetails)
+admin.site.register(OperationDetails)
 admin.site.register(Round)
 admin.site.register(Subcontractor)

@@ -5,17 +5,17 @@
 <div class="col-8 mx-auto">
     <form action="." class="account-form px-4 pt-4" method="post" enctype="multipart/form-data">
 
-        <h3 class="mb-2 font-weight-bold">Edit personnal information</h3>
+        <h3 class="mb-2 font-weight-bold">Modifier les Informations Personnelles</h3>
 
         {% if user_form.is_valid %}
         <div class="alert alert-primary" role="alert">
-            <Details>Details successfully updated!</Details>
+            <Details>Details modifiés avec succée!</Details>
         </div>
         <p class="small text-center pt-0">
-            <a href="{% url "account:dashboard" %}"> Back to your Dashboard</a>
+            <a href="{% url "account:dashboard" %}"> retour au Tableau de bord!</a>
         </p>
         {% else %}
-        <p> You can edit your account using the follosing form:</p>
+        <p> Vous pouvez modifier vos information dans ce formulaire:</p>
         {% endif %}
 
         {% if form.errors %}
@@ -25,35 +25,62 @@
         {% endif %}
 
         {% csrf_token %}
-        <label class="small font-weight-bold"> {{user_form.email.label}}</label>
-        {{ user_form.email }}
-        <label class="small font-weight-bold">{{ user_form.first_name.label}}</label>
-        {{ user_form.first_name }}
-        <label class="small font-weight-bold">{{ user_form.last_name.label}}</label>
-        {{ user_form.last_name }}
-        <label class="small font-weight-bold">{{ user_form.mobile.label}}</label>
-        {{ user_form.mobile }}
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            <div class="col">
+                <label class="small font-weight-bold"> {{user_form.email.label}}</label>
+                {{ user_form.email }}
+            </div>
+            <div class="col">
+                <label>{{ user_form.last_name.label}} <span class="text-muted small"> (Required)
+                    </span></label>
+                {{ user_form.last_name }}
+            </div>
+            <div class="col">
+                <label>{{ user_form.first_name.label}} <span class="text-muted small"> (Required)
+                    </span></label>
+                {{ user_form.first_name }}
+            </div>
+        </div>
         <label class="small font-weight-bold">{{ user_form.company_name.label}}</label>
         {{ user_form.company_name }}
-        <label class="small font-weight-bold">{{ user_form.ice.label}}</label>
-        {{ user_form.ice }}
-        <label class="small font-weight-bold">{{ user_form.website.label}}</label>
-        {{ user_form.website }}
-        <label class="small font-weight-bold">{{ user_form.mobile_2.label}}</label>
-        {{ user_form.mobile_2 }}
-        <label class="small font-weight-bold">{{ user_form.landline.label}}</label>
-        {{ user_form.landline }}
+        <div class="row row-cols-1 row-cols-sm-2 g-3">
+            <div class="col">
+                <label class="small font-weight-bold">{{ user_form.ice.label}}</label>
+                {{ user_form.ice }}
+            </div>
+            <div class="col">
+                <label class="small font-weight-bold">{{ user_form.website.label}}</label>
+                {{ user_form.website }}
+            </div>
+        </div>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            <div class="col">
+                <label class="small font-weight-bold">{{ user_form.mobile.label}}</label>
+                {{ user_form.mobile }}
+            </div>
+            <div class="col">
+                <label class="small font-weight-bold">{{ user_form.mobile_2.label}}</label>
+                {{ user_form.mobile_2 }}
+            </div>
+            <div class="col">
+                <label class="small font-weight-bold">{{ user_form.landline.label}}</label>
+                {{ user_form.landline }}
+            </div>
+        </div>
 
-        <button class="btn btn-primary btn-block py-2 mb-4 mt 5 fw-bold w-100" type="submit" value="Save changes">Save
+        <button class="btn btn-primary btn-block py-2 mb-2 mt-3 fw-bold w-100" type="submit" value="Save changes">Save
             Changes</button>
         <hr class="mb-3">
     </form>
     <form action="{% url 'account:delete_user' %}" class="account-form px-4" method="post">
         {% csrf_token %}
-        <p class="h3 pt-4 font-weigh-bold">Delete Accout</p>
-        <p>Are you sure you want to delete your account</p>
-        <button role="button" class="btn btn-danger btn-block py-2 mb-4 mt-5 fw-bold w-100"
-            type="submit">Delete</button>
+        <p class="h3 pt-4 font-weigh-bold">Supprimer Profile</p>
+        <p>etes-vous sûr de vouloir supprimer votre profile!</p>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button role="button" class="btn btn-outline-danger btn-block py-2 mb-2 mt-3 fw-bold" type="submit">
+                Supprimer
+            </button>
+        </div>
     </form>
 </div>
 

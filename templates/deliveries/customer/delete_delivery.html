@@ -1,0 +1,56 @@
+{% extends "../../account/sub_base.html" %}
+{% block title %}
+<title>Supprimé Livraison</title>
+<style media="screen">
+  #body-table tr:nth-child(odd) {
+    background: #F2F2F2;
+  }
+
+  #body-table tr:nth-child(even) {
+    background: #CDBB79;
+  }
+</style>
+{% endblock title %}
+{% block content %}
+<div class="container">
+  <div class="d-grid gap-2">
+    <h1> Supprimé Livraisons </h1>
+  </div>
+  <div class="container">
+  <form action="">
+    {% csrf_token %}
+    <table class="table table-hover" border="2">
+      <thead class="table-dark">
+        <th>Client</th>
+        <th>Ville de Ramassage </th>
+        <th>Ville Destination</th>
+        <th>Date d'Opération</th>
+        <th>Heure</th>
+        <th>Kilometrage </th>
+        <th>Durée</th>
+        <th>Status Livraison</th>
+      </thead>
+      <tbody id="body-table">
+        <tr>
+          <td> <a href={{delivery.get_absolute_url}}>{{ delivery.user}}</a> </td>
+          <td>{{ delivery.pickup_address.town_city}}</td>
+          <td>{{ delivery.destination_address.town_city}}</td>
+          <td>{{ delivery.operation_date|date:"d-M-Y" }}</td>
+          <td>{{ delivery.operation_time}}</td>
+          <td>{{ delivery.geo_distance_value }} Km ou de google: {{ delivery.google_distance_value }} km</td>
+          <td>{{ delivery.distance.google_duration }}</td>
+          <td>{{ delivery.delivery_status|yesno:"Livrée,Non" }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class=" m-6">
+        <button type="submit" class="btn btn-outline-danger m-6 p-6" value="Confirm">Supprimer</button>
+        <a href="{{ view.get_success_url }}" class="btn btn-outline-secondary m-6 p-6">Cancel</a>
+    </div>
+    <div class=" m-6">
+    </div>
+    </form>
+  </div>
+</div>
+
+{% endblock content %}

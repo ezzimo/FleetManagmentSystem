@@ -4,8 +4,8 @@
 
 
 {% block sub_content %}
-<h1 class="h2">Your Addresses</h1>
-<div> Manage your <b>addresses</b> and delivery preferances </div>
+<h1 class="h2">Les Adresses</h1>
+<div> Gerer les <b>addresses</b> et les préférences de livraison </div>
 <hr />
 <div class="container px-0">
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
@@ -21,7 +21,7 @@
                                     <path
                                         d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                                 </svg>
-                                <h1 class="h5">Add Address</h1>
+                                <h1 class="h5">Ajouter Adresse</h1>
                             </div>
                         </div>
                     </div>
@@ -30,17 +30,21 @@
         </div>
         {% for address in addresses %}
         <div class="col">
-            <div class="card pb-3">
-                <div class="card-header bg-white small text-muted">
-                    {% if address.default %}
-                    Default
-                    {% endif %}
+            <div class="card text-dark pb-0 mb-3 h-100" style="border: dashed 2px #ccc;">
+           {% if address.default %}
+                <div class="card-header text-white bg-secondary">
+                    {{address.address_name}}
+                    <sub>(Default)</sub>
+                </div>
+            {% else %}
+                <div class="card-header text-dark bg-light">
+                   {{address.address_name}}
                     &nbsp;
                 </div>
-                <div class="card-body small pb-1">
-                    <p class="card-text m-0 fw-bold">{{address.full_name}}</p>
-                    <p class="card-text m-0">{{address.address_line}}</p>
-                    <p class="card-text m-0">{{address.address_line2}}</p>
+            {% endif %}
+                <div class="card-body bg-light small pb-1">
+                    <p class="card-text m-0">{{address.address_line_1}}</p>
+                    <p class="card-text m-0">{{address.address_line_2}}</p>
                     <p class="card-text m-0">{{address.town_city}}</p>
                     <p class="card-text m-0">{{address.postcode}}</p>
                     <p class="card-text m-0">Phone number: {{address.phone}}</p>

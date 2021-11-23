@@ -1,0 +1,83 @@
+{% extends '../sub_base.html' %}
+{% block title %} Nouveau Client{% endblock title %}
+{% block sub_content %}
+
+
+
+<form action="." class="account-form p-4 rounded col-lg-10 mx-auto" method="post">
+    {% csrf_token %}
+    <h3 class="mb-2 font-weight-bold">Ajouter Client</h3>
+
+    {% if form.errors %}
+    <p>Corriger svp cette erreur:</p>
+    {% for field in form %}
+    {% if field.errors %}
+    <div class="alert alert-primary" role="alert">
+        {{ field.label}}: {{ field.errors|striptags}}
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+
+    <div class="row row-cols-1 row-cols-sm-2 g-3">
+        <div class="col">
+            <label>{{ form.last_name.label}} <span class="text-muted small"> (Required)
+                </span></label>
+            {{ form.last_name }}
+        </div>
+        <div class="col">
+            <label>{{ form.first_name.label}} <span class="text-muted small"> (Required)
+                </span></label>
+            {{ form.first_name }}
+        </div>
+    </div>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        <div class="col">
+            <label>{{ form.company_name.label}}</label>
+            {{ form.company_name }}
+        </div>
+        <div class="col">
+            <label>{{ form.ice.label}}</label>
+            {{ form.ice }}
+        </div>
+        <div class="col">
+            <label> {{form.email.label}}</label>
+            {{ form.email }}
+        </div>
+    </div>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        <div class="col">
+            <label>{{ form.mobile.label}}</label>
+            {{ form.mobile }}
+        </div>
+        <div class="col">
+            <label>{{ form.mobile_2.label}}</label>
+            {{ form.mobile_2 }}
+        </div>
+        <div class="col">
+            <label>{{ form.landline.label}}</label>
+            {{ form.landline }}
+        </div>
+    </div>
+    <div class="row row-cols-1 row-cols-md-2 g-3">
+        <div class="col">
+    <label>{{ form.Contract_type.label}}</label>
+    {{ form.Contract_type }}
+        </div>
+        <div class="col">
+    <label>{{ form.website.label}}</label>
+    {{ form.website }}
+        </div>
+    </div>
+    <div class="row row-cols-1 row-cols-md-2 g-3">
+        <div class="col">
+    <button class="btn btn-primary btn-lg py-2 mb-4 mt-2 fw500 w-100" role="button" type="submit">Ajouter</button>
+        </div>
+        <div class="col">
+    <button class="btn btn-secondary btn-lg py-2 mb-4 mt-2 fw500 w-100" role="button" type="button"
+        onclick="window.location='{% url 'account:dashboard' %}' ; return False;">Annuler</button>
+        </div>
+    </div>
+</form>
+
+{% endblock sub_content %}
