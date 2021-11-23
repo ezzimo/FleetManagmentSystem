@@ -13,6 +13,9 @@ db.sqlite3-journal
 *.jpg
 *.jpeg
 *.sqlite3
+*settings.py
+heroku.yml
+Aptfile
 .vscode/settings.json
 *.xlsx
 *.csv
