@@ -37,16 +37,9 @@ class Delivery(models.Model):
     google_distance_value = models.DecimalField(max_digits=7, decimal_places=2, blank=True, null=True)
     geo_distance_value = models.DecimalField(max_digits=7, decimal_places=2, blank=True, null=True)
     google_duration_value = models.DurationField(blank=True, null=True)
-    boxes_number = models.PositiveIntegerField(_("Number of Boxes"), default=1)
-    boxes_wight = models.PositiveIntegerField(_("Boxes Wight"), default=1)
-    boxes_volume = models.PositiveIntegerField(_("Boxes Volume"), default=0)
-    document = models.FileField(
-        help_text=_("Delivery Documets"),
-        verbose_name=_("Delivery Certificates"),
-        upload_to="documents/deliveries_documents/",
-        blank=True,
-        null=True,
-    )
+    boxes_number = models.PositiveIntegerField(_("Nombre des Boites"), default=1)
+    boxes_wight = models.PositiveIntegerField(_("Poids de Boites"), default=1)
+    boxes_volume = models.PositiveIntegerField(_("Volume des Boites"), default=0)
     invoice = models.BooleanField(_("check if you want an invoice"), default=False)
     confirmed = models.BooleanField(_("confirmed Delivery"), default=False)
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True, editable=False)
@@ -109,6 +102,29 @@ class Delivery(models.Model):
 
     def __str__(self):
         return str(self.delivery_key)
+
+
+class DeliveryDocuments(models.Model):
+    delivery = models.ForeignKey(
+        Delivery, on_delete=models.SET_NULL, related_name=_("delivery_documents"), blank=True, null=True
+    )
+    document = models.FileField(
+        help_text=_("Delivery Documets"),
+        verbose_name=_("Delivery Certificates"),
+        upload_to="documents/deliveries_documents/",
+        blank=True,
+        null=True,
+    )
+    created_at = models.DateTimeField(_("Created at"), auto_now_add=True, editable=False)
+    updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
+
+    class Meta:
+        ordering = ("-created_at", "delivery")
+        verbose_name = _("Delivery Documents")
+        verbose_name_plural = _("Deliveries Documents")
+
+    def __str__(self):
+        return str(self.delivery)
 
 
 class Round(models.Model):

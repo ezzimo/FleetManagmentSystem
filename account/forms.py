@@ -247,9 +247,6 @@ class UserEditForm(forms.ModelForm):
         ),
     )
     company_name = forms.Select(
-        label="Compagnie",
-        min_length=4,
-        max_length=50,
         attrs={"class": "form-control mb-3", "placeholder": "Nom de la Compagnie", "id": "form-company_name"},
     )
     ice = forms.CharField(

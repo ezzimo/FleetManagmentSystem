@@ -136,13 +136,15 @@
                     {{ object.boxes_wight }} Kg
                 </dd>
             </div>
-            {% if object.document %}
+            {% if document %}
             <div class="col">
                 <dt>
                     Documents:
                 </dt>
                 <dd>
-                    <a href="{{ object.document.url }}" target="_blank" rel="noopener noreferrer">document</a>
+                {% for doc in document %}
+                    <li><a href="{{ doc.document.url }}" target="_blank" rel="noopener noreferrer">document</a></li> 
+                {% endfor %}
                 </dd>
             </div>
             {% endif %}

@@ -6,8 +6,13 @@ from django.views import View, generic
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, FormView, UpdateView
 
-from .forms import DeliveryListForm, OperationDetailForm, UserDeliveryForm
-from .models import Delivery, OperationDetails, Round, Subcontractor
+from .forms import (
+    DeliveryDocumentsForm,
+    DeliveryListForm,
+    OperationDetailForm,
+    UserDeliveryForm,
+)
+from .models import Delivery, DeliveryDocuments, OperationDetails, Round, Subcontractor
 
 
 class DeliveryListView(LoginRequiredMixin, UserPassesTestMixin, generic.ListView):
@@ -22,7 +27,7 @@ class DeliveryListView(LoginRequiredMixin, UserPassesTestMixin, generic.ListView
 
 class DeliveryCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView, FormView):
     model = Delivery
-    form_class = UserDeliveryForm
+    form_class = DeliveryDocumentsForm
     template_name = "deliveries/customer/edit_deliveries.html"
 
     def get_success_url(self):
@@ -34,10 +39,13 @@ class DeliveryCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView, Fo
     def post(self, request, *args, **kwargs):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        files = request.FILES.getlist("decument")
+        files = request.FILES.getlist("document")
         if form.is_valid():
-            for file in files:
-                self.Delivery.objects.create(document=file)
+            delivery = form.save(commit=False)
+            delivery.save()
+            if files:
+                for file in files:
+                    DeliveryDocuments.objects.create(document=file, delivery=delivery)
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
@@ -53,6 +61,12 @@ class DeliveryDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 
     def get_success_url(self):
         return reverse("delivery:operation-form", kwargs={"pk": self.object.pk})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        documents = DeliveryDocuments.objects.filter(delivery_id=self.object.pk)
+        context["document"] = documents
+        return context
 
     def test_func(self):
         return self.request.user.is_active

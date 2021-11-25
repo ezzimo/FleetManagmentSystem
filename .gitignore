@@ -14,7 +14,7 @@ db.sqlite3-journal
 *.jpg
 *.jpeg
 *.sqlite3
-*settings.py
+Transport/settings/settings.py
 heroku.yml
 Aptfile
 .vscode/settings.json

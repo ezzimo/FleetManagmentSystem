@@ -2,7 +2,7 @@ from django import forms
 from django.forms import fields, widgets
 from django.utils.translation import gettext_lazy as _
 
-from .models import Delivery, OperationDetails, Round, Subcontractor
+from .models import Delivery, DeliveryDocuments, OperationDetails, Round, Subcontractor
 
 
 class UserDeliveryForm(forms.ModelForm):
@@ -19,7 +19,6 @@ class UserDeliveryForm(forms.ModelForm):
             "boxes_number",
             "boxes_wight",
             "boxes_volume",
-            "document",
             "invoice",
             "delivery_key",
             "billing_status",
@@ -33,7 +32,6 @@ class UserDeliveryForm(forms.ModelForm):
             "operation_time": forms.TimeInput(
                 attrs={"type": "time", "class": "form-control mb-2 delivery-form"},
             ),
-            "document": forms.ClearableFileInput(attrs={"multiple": True}),
             "user": forms.Select(),
             "user_pickup": forms.Select(),
             "pickup_address": forms.Select(),
@@ -65,9 +63,6 @@ class UserDeliveryForm(forms.ModelForm):
         self.fields["boxes_volume"].widget.attrs.update(
             {"class": "form-control mb-2 delivery-form", "Placeholder": "Volume de la marchandise"}
         )
-        self.fields["document"].widget.attrs.update(
-            {"class": "form-control mb-2 delivery-form", "Placeholder": "document"}
-        )
         self.fields["invoice"].widget.attrs.update(
             {
                 "type": "checkbox",
@@ -92,6 +87,13 @@ class UserDeliveryForm(forms.ModelForm):
                 "Placeholder": "Status de Livraison",
             }
         )
+
+
+class DeliveryDocumentsForm(UserDeliveryForm):
+    document = forms.FileField(widget=forms.ClearableFileInput(attrs={"multiple": True}))
+
+    class Meta(UserDeliveryForm.Meta):
+        fields = UserDeliveryForm.Meta.fields + ["document"]
 
 
 class OperationDetailForm(forms.ModelForm):
