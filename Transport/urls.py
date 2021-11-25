@@ -19,11 +19,11 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path("", include("deliveries.urls", namespace="delivery")),
+    path("", include("account.urls", namespace="account")),
     path("admin/", admin.site.urls),
     path("vehicle/", include("vehicle.urls", namespace="vehicle")),
-    path("account/", include("account.urls", namespace="account")),
-    # path("delivery/", include("deliveries.urls", namespace="delivery")),
+    # path("account/", include("account.urls", namespace="account")),
+    path("delivery/", include("deliveries.urls", namespace="delivery")),
 ]
 
 if settings.DEBUG:
