@@ -40,13 +40,13 @@ class Delivery(models.Model):
     boxes_number = models.PositiveIntegerField(_("Nombre des Boites"), default=1)
     boxes_wight = models.PositiveIntegerField(_("Poids de Boites"), default=1)
     boxes_volume = models.PositiveIntegerField(_("Volume des Boites"), default=0)
-    invoice = models.BooleanField(_("check if you want an invoice"), default=False)
+    invoice = models.BooleanField(_("Facturation"), default=False)
     confirmed = models.BooleanField(_("confirmed Delivery"), default=False)
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
-    delivery_key = models.CharField(max_length=200)
-    billing_status = models.BooleanField(default=False)
-    delivery_status = models.BooleanField(default=False)
+    delivery_key = models.CharField(_("Numero de Livraison"), max_length=200)
+    billing_status = models.BooleanField(_("Status de la Facturation"), default=False)
+    delivery_status = models.BooleanField(_("Status de Livraison"), default=False)
 
     class Meta:
         ordering = ("-created_at",)

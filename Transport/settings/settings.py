@@ -84,6 +84,16 @@ WSGI_APPLICATION = "Transport.wsgi.application"
 
 django_heroku.settings(locals())
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.contrib.gis.db.backends.postgis",
+#         "NAME": "manager",
+#         "USER": "testuser",
+#         "PASSWORD": "Lin123",
+#         "HOST": "localhost",
+#     }
+# }
+
 DATABASES = {
     "default": dj_database_url.config(conn_max_age=86400),
 }
