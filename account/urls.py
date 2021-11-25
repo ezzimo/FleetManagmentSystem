@@ -9,6 +9,7 @@ from .views import *
 app_name = "account"
 
 urlpatterns = [
+    path("", views.dashboard, name="dashboard"),
     path(
         "login/",
         auth_views.LoginView.as_view(template_name="account/login.html", form_class=UserLoginForm),
@@ -51,7 +52,6 @@ urlpatterns = [
         TemplateView.as_view(template_name="account/password_reset/reset_status.html"),
         name="password_reset_complete",
     ),
-    path("dashboard/", views.dashboard, name="dashboard"),
     path("profile/edit/", views.edit_details, name="edit_details"),
     path("profile/delete_user/", views.delete_user, name="delete_user"),
     path(
