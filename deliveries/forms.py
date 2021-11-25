@@ -57,13 +57,13 @@ class UserDeliveryForm(forms.ModelForm):
             {"class": "form-control mb-2 delivery-form", "Placeholder": "Addresse de destination"}
         )
         self.fields["boxes_number"].widget.attrs.update(
-            {"class": "form-control mb-2 delivery-form", "Placeholder": "boxes number"}
+            {"class": "form-control mb-2 delivery-form", "Placeholder": "Nombre de Boites"}
         )
         self.fields["boxes_wight"].widget.attrs.update(
-            {"class": "form-control mb-2 delivery-form", "Placeholder": "boxes wight"}
+            {"class": "form-control mb-2 delivery-form", "Placeholder": "Poids de la marchandise"}
         )
         self.fields["boxes_volume"].widget.attrs.update(
-            {"class": "form-control mb-2 delivery-form", "Placeholder": "boxes volume"}
+            {"class": "form-control mb-2 delivery-form", "Placeholder": "Volume de la marchandise"}
         )
         self.fields["document"].widget.attrs.update(
             {"class": "form-control mb-2 delivery-form", "Placeholder": "document"}
@@ -72,24 +72,24 @@ class UserDeliveryForm(forms.ModelForm):
             {
                 "type": "checkbox",
                 "class": "form-check-input delivery-form",
-                "Placeholder": "delivery status",
+                "Placeholder": "Facturation",
             }
         )
         self.fields["delivery_key"].widget.attrs.update(
-            {"class": "form-control mb-2 delivery-form", "Placeholder": "delivery key"}
+            {"class": "form-control mb-2 delivery-form", "Placeholder": "Numero de Livraison"}
         )
         self.fields["billing_status"].widget.attrs.update(
             {
                 "type": "checkbox",
                 "class": "mb-2 form-check-input delivery-form",
-                "Placeholder": "delivery status",
+                "Placeholder": "Status de la Facturation",
             }
         )
         self.fields["delivery_status"].widget.attrs.update(
             {
                 "type": "checkbox",
                 "class": "mb-2 form-check-input delivery-form",
-                "Placeholder": "delivery status",
+                "Placeholder": "Status de Livraison",
             }
         )
 

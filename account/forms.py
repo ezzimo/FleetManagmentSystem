@@ -18,7 +18,6 @@ from .models import Address, Client, User
 # from mapwidgets.widgets import GooglePointFieldWidget, GoogleStaticOverlayMapWidget
 
 
-
 class UserAddressForm(forms.ModelForm):
     customer = forms.Select(attrs={"help_text": "obligatoire"})
     address_point = gis_form.PointField(
@@ -247,19 +246,17 @@ class UserEditForm(forms.ModelForm):
             attrs={"class": "form-control mb-3", "placeholder": "mobile number", "id": "form-mobile_1"}
         ),
     )
-    company_name = forms.CharField(
-        label="Companie",
+    company_name = forms.Select(
+        label="Compagnie",
         min_length=4,
         max_length=50,
-        widget=forms.TextInput(
-            attrs={"class": "form-control mb-3", "placeholder": "Company name", "id": "form-company_name"}
-        ),
+        attrs={"class": "form-control mb-3", "placeholder": "Nom de la Compagnie", "id": "form-company_name"},
     )
     ice = forms.CharField(
         label="ICE",
         min_length=4,
         max_length=50,
-        widget=forms.TextInput(attrs={"class": "form-control mb-3", "placeholder": "Company ice", "id": "form-ice"}),
+        widget=forms.TextInput(attrs={"class": "form-control mb-3", "placeholder": "Compagnie ice", "id": "form-ice"}),
     )
     website = forms.CharField(
         label="Site",
