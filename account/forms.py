@@ -23,8 +23,8 @@ class UserAddressForm(forms.ModelForm):
     address_point = gis_form.PointField(
         widget=gis_form.OSMWidget(
             attrs={
-                "map_width": 300,
-                "map_height": 200,
+                "map_width": 500,
+                "map_height": 350,
                 "default_lat": 33.575729,
                 "default_lon": -7.706956,
                 "default_zoom": 9,

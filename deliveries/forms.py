@@ -27,7 +27,7 @@ class UserDeliveryForm(forms.ModelForm):
         widgets = {
             "operation_date": forms.DateInput(
                 format=("%d %B %Y"),
-                attrs={"class": "form-control mb-2 delivery-form", "placeholder": "JJ-MM-AAAA"},
+                attrs={"class": "form-control mb-2 delivery-form", "placeholder": "JJ/MM/AAAA"},
             ),
             "operation_time": forms.TimeInput(
                 attrs={"type": "time", "class": "form-control mb-2 delivery-form"},
