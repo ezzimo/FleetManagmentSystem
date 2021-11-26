@@ -46,7 +46,7 @@ class DeliveryCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView, Fo
             if files:
                 for file in files:
                     DeliveryDocuments.objects.create(document=file, delivery=delivery)
-            return self.form_valid(form)
+            return redirect("delivery:deliveries")
         else:
             return self.form_invalid(form)
 

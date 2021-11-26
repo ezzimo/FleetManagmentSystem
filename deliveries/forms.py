@@ -77,14 +77,12 @@ class UserDeliveryForm(forms.ModelForm):
             {
                 "type": "checkbox",
                 "class": "mb-2 form-check-input delivery-form",
-                "Placeholder": "Status de la Facturation",
             }
         )
         self.fields["delivery_status"].widget.attrs.update(
             {
                 "type": "checkbox",
                 "class": "mb-2 form-check-input delivery-form",
-                "Placeholder": "Status de Livraison",
             }
         )
 
