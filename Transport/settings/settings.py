@@ -84,15 +84,6 @@ WSGI_APPLICATION = "Transport.wsgi.application"
 
 django_heroku.settings(locals())
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.contrib.gis.db.backends.postgis",
-#         "NAME": "manager",
-#         "USER": "testuser",
-#         "PASSWORD": "Lin123",
-#         "HOST": "localhost",
-#     }
-# }
 
 DATABASES = {
     "default": dj_database_url.config(conn_max_age=86400),
@@ -143,8 +134,8 @@ MAP_WIDGETS = {
 }
 # Customized user model
 AUTH_USER_MODEL = "account.User"
-LOGIN_REDIRECT_URL = "/account/dashboard"
-LOGIN_URL = "/account/login/"
+LOGIN_REDIRECT_URL = "/dashboard"
+LOGIN_URL = "/login/"
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_STORAGE = "storages.backends.s3boto3.S3StaticStorage"
