@@ -84,12 +84,11 @@ WSGI_APPLICATION = "Transport.wsgi.application"
 
 django_heroku.settings(locals())
 
-
 DATABASES = {
     "default": dj_database_url.config(conn_max_age=86400),
 }
 DATABASES["default"]["ENGINE"] = "django.contrib.gis.db.backends.postgis"
-
+#
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -134,7 +133,7 @@ MAP_WIDGETS = {
 }
 # Customized user model
 AUTH_USER_MODEL = "account.User"
-LOGIN_REDIRECT_URL = ""
+LOGIN_REDIRECT_URL = "account:dashboard"
 LOGIN_URL = "/login/"
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
