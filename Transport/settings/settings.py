@@ -134,7 +134,7 @@ MAP_WIDGETS = {
 }
 # Customized user model
 AUTH_USER_MODEL = "account.User"
-LOGIN_REDIRECT_URL = "/dashboard"
+LOGIN_REDIRECT_URL = ""
 LOGIN_URL = "/login/"
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
