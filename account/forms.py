@@ -43,9 +43,37 @@ class UserAddressForm(forms.ModelForm):
             {"class": "form-control mb-2 account-form", "Placeholder": "delivery instructions"}
         )
 
+    # Add form validation and error handling here
+    def clean_phone(self):
+        phone = self.cleaned_data.get("phone")
+        if not phone:
+            raise forms.ValidationError("Phone number is required")
+        if len(phone) < 10 or len(phone) > 15:
+            raise forms.ValidationError("Phone number must be between 10 and 15 digits long")
+        return phone
+
+    def clean_address_line_1(self):
+        address_line_1 = self.cleaned_data.get("address_line_1")
+        if not address_line_1:
+            raise forms.ValidationError("Address line 1 is required")
+        return address_line_1
+
+    def clean_town_city(self):
+        town_city = self.cleaned_data.get("town_city")
+        if not town_city:
+            raise forms.ValidationError("Town/City is required")
+        return town_city
+
+    def clean_postcode(self):
+        postcode = self.cleaned_data.get("postcode")
+        if not postcode:
+            raise forms.ValidationError("Postcode is required")
+        if len(postcode) < 6 or len(postcode) > 8:
+            raise forms.ValidationError("Postcode must be between 6 and 8 characters long")
+        return postcode
+
 
 class UserLoginForm(AuthenticationForm):
-
     username = forms.CharField(
         widget=forms.TextInput(attrs={"class": "form-control mb-3", "placeholder": "Username", "id": "login-username"})
     )
@@ -59,11 +87,43 @@ class UserLoginForm(AuthenticationForm):
         )
     )
 
+    def clean_username(self):
+        username = self.cleaned_data["username"]
+        if not username:
+            raise forms.ValidationError("Please enter a username")
+        if len(username) < 4:
+            raise forms.ValidationError("Username must be at least 4 characters long")
+        return username
+
+    def clean_password(self):
+        password = self.cleaned_data["password"]
+        if not password:
+            raise forms.ValidationError("Please enter a password")
+        if len(password) < 4:
+            raise forms.ValidationError("Password must be at least 4 characters long")
+        return password
+
 
 class UserCreationForm(UserCreationForm):
+    first_name = forms.CharField(label=_("Enter First name"), min_length=4, max_length=50, help_text="Required", required=True)
+    last_name = forms.CharField(label=_("Enter Last name"), min_length=4, max_length=50, help_text="Required", required=True)
+    email = forms.EmailField(
+        max_length=100, help_text=_("Required"), error_messages={"required": "Sorry, you will need an email"}, required=True
+    )
+    
     class Meta:
         model = User
-        fields = ("email",)
+        fields = (
+            "first_name",
+            "last_name",
+            "email",
+        )
+    
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("Email is already in use")
+        return email
 
 
 class UserChangeForm(UserChangeForm):
@@ -71,15 +131,58 @@ class UserChangeForm(UserChangeForm):
         model = User
         fields = ("email",)
 
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError('This email is already in use. Please choose a different email.')
+        return email
+
 
 class RegistrationForm(UserCreationForm):
-    first_name = forms.CharField(label=_("Enter First name"), min_length=4, max_length=50, help_text="Required")
-    last_name = forms.CharField(label=_("Enter Last name"), min_length=4, max_length=50, help_text="Required")
-    email = forms.EmailField(
-        max_length=100, help_text=_("Required"), error_messages={"Required": "Sorry, you will need an email"}
+    first_name = forms.CharField(
+        label=_("Enter First name"),
+        min_length=4,
+        max_length=50,
+        help_text="Required",
+        error_messages={
+            "required": "First name is required",
+            "min_length": "First name must be at least 4 characters",
+            "max_length": "First name cannot be more than 50 characters",
+        }
     )
-    password = forms.CharField(label="Password", widget=forms.PasswordInput)
-    password2 = forms.CharField(label="Repeat password", widget=forms.PasswordInput)
+    last_name = forms.CharField(
+        label=_("Enter Last name"),
+        min_length=4,
+        max_length=50,
+        help_text="Required",
+        error_messages={
+            "required": "Last name is required",
+            "min_length": "Last name must be at least 4 characters",
+            "max_length": "Last name cannot be more than 50 characters",
+        }
+    )
+    email = forms.EmailField(
+        max_length=100,
+        help_text=_("Required"),
+        error_messages={
+            "required": "Email is required",
+            "invalid": "Please enter a valid email address",
+        }
+    )
+    password = forms.CharField(
+        label="Password",
+        widget=forms.PasswordInput,
+        error_messages={
+            "required": "Password is required",
+        }
+    )
+    password2 = forms.CharField(
+        label="Repeat password",
+        widget=forms.PasswordInput,
+        error_messages={
+            "required": "Confirm password is required",
+        }
+    )
 
     class Meta:
         model = User
@@ -100,24 +203,9 @@ class RegistrationForm(UserCreationForm):
     def clean_password2(self):
         cd = self.cleaned_data
         if cd["password"] != cd["password2"]:
-            raise forms.ValidationError("Passwords do not match.")
+            raise forms.ValidationError("Passwords don't match")
         return cd["password2"]
 
-    def clean_email(self):
-        email = self.cleaned_data["email"]
-        if User.objects.filter(email=email).exists():
-            raise forms.ValidationError("Please use another Email, that is already taken")
-        return email
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["first_name"].widget.attrs.update({"class": "form-control mb-3", "placeholder": "First name"})
-        self.fields["last_name"].widget.attrs.update({"class": "form-control mb-3", "placeholder": "Last name"})
-        self.fields["email"].widget.attrs.update(
-            {"class": "form-control mb-3", "placeholder": "E-mail", "name": "email", "id": "id_email"}
-        )
-        self.fields["password"].widget.attrs.update({"class": "form-control mb-3", "placeholder": "Password"})
-        self.fields["password2"].widget.attrs.update({"class": "form-control", "placeholder": "Repeat Password"})
 
 
 class UserEditForm(forms.ModelForm):
@@ -206,18 +294,30 @@ class UserEditForm(forms.ModelForm):
         self.fields["mobile"].required = True
 
 
+class UserEditForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ["first_name", "last_name", "email"]
+
+    def clean_email(self):
+        email = self.cleaned_data["email"]
+        if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError("A user with this email address already exists.")
+        return email
 class PwdResetForm(PasswordResetForm):
     email = forms.EmailField(
-        max_length=254,
-        widget=forms.TextInput(attrs={"class": "form-control mb-3", "placeholder": "Email", "id": "form-email"}),
+        label="Email",
+        max_length=100,
+        help_text="Enter the email you used to register",
+        error_messages={"invalid": "Please enter a valid email address"},
     )
 
     def clean_email(self):
         email = self.cleaned_data["email"]
-        usr = User.objects.filter(email=email)
-        if not usr:
-            raise forms.ValidationError("Unfortunatley we can not find that email address")
+        if not User.objects.filter(email=email).exists():
+            raise forms.ValidationError("There is no user with this email.")
         return email
+
 
 
 class PwdResetConfirmForm(SetPasswordForm):
@@ -233,3 +333,18 @@ class PwdResetConfirmForm(SetPasswordForm):
             attrs={"class": "form-control mb-3", "placeholder": "New Password", "id": "form-new-pass2"}
         ),
     )
+
+    def clean_new_password2(self):
+        password1 = self.cleaned_data.get('new_password1')
+        password2 = self.cleaned_data.get('new_password2')
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError("Passwords don't match")
+        return password2
+
+    def save(self, commit=True):
+        password = self.cleaned_data["new_password1"]
+        self.user.set_password(password)
+        if commit:
+            self.user.save()
+        return self.user
+
