@@ -58,6 +58,16 @@ class UserAccountManager(BaseUserManager):
         return user
 
 
+class User(AbstractUser):
+    role = models.CharField(
+        max_length=20,
+        choices=(
+            ("customer", "Customer"),
+            ("manager", "Manager"),
+            ("admin", "Admin"),
+        ),
+        default="customer",
+    )
 class User(AbstractBaseUser, PermissionsMixin):
     class TypeOfContract(models.TextChoices):
         PERMANENT = "Per.", _("Permanent")
@@ -66,13 +76,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     class UserTypes(models.TextChoices):
         CUSTOMER = "cu", _("Customer")
         ADMINISTRATION = "ad", _("Administration")
-        Driver = "dr", _("Driver")
+        DRIVER = "dr", _("Driver")
 
         @classmethod
         def get_value(cls, member):
             return cls[member].value[0]
 
-    user_type = models.CharField(max_length=2, choices=UserTypes.choices)
+    user_type = models.ManyToManyField(UserTypes)
     email = models.EmailField(_("Email Address"), unique=True)
     first_name = models.CharField(_("First Name"), max_length=150, unique=True)
     last_name = models.CharField(_("Last Name"), max_length=150, unique=True)
