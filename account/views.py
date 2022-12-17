@@ -90,7 +90,11 @@ def account_activate(request, uidb64, token):
 
 @login_required
 def view_address(request):
-    addresses = Address.objects.filter(customer=request.user)
+    addresses_list = Address.objects.filter(customer=request.user)
+    paginator = Paginator(addresses_list, 10)  # Show 10 addresses per page
+
+    page = request.GET.get("page")
+    addresses = paginator.get_page(page)
     return render(request, "account/dashboard/addresses.html", {"addresses": addresses})
 
 
